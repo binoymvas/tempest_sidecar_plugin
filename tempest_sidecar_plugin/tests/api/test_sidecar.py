@@ -16,6 +16,7 @@
 #importing required packages
 from tempest_sidecar_plugin.tests.api import base
 from tempest import test
+from tempest import config
 import json
 import subprocess
 from sidecarclient import client
@@ -25,6 +26,7 @@ import os
 
 #Defining the global connection string
 _sidecar_ = None
+CONF = config.CONF
 
 class TestTempestSidecar(base.BaseTempestSidecarTest):
 
@@ -44,11 +46,11 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         #Creating connection if not avaialble
         if not _sidecar_:
             _sidecar_ = client.Client(
-                            username='admin',
-                            password='demo',
-                            auth_url='http://198.100.181.67:35357/v2.0',
-                            region_name='RegionOne',
-                            tenant_name='admin',
+                            username=CONF.auth.admin_username,
+                            password=CONF.auth.admin_password,
+                            auth_url=CONF.identity.uri,
+                            region_name=CONF.identity.region,
+                            tenant_name=CONF.auth.admin_project_name,
                             timeout=10,
                             insecure=False
                     )
