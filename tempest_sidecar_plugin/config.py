@@ -1,6 +1,24 @@
+# -*- coding: utf-8 -*-
+# _______________________________________________________
+# | File Name: config.py                                |
+# |                                                     |
+# | Package Name: Tmpest Sidecar Plugin                 |
+# |                                                     |
+# | Version: 1                                          |
+# |                                                     |
+# | Sofatware: Openstack                                |
+# |_____________________________________________________|
+# | Copyright: 2016@nephoscale.com                      |
+# |                                                     |
+# | Author:  info@nephoscale.com                        |
+# |_____________________________________________________|
+
+
+#importing required packages
 from oslo_config import cfg
 from tempest import config
 
+#Adding the groups
 service_available_group = cfg.OptGroup(
     name="service_available",
     title="Available OpenStack Services"

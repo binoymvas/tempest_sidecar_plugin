@@ -1,6 +1,21 @@
+# -*- coding: utf-8 -*-
+# _______________________________________________________
+# | File Name: test_sidecar.py                          |
+# |                                                     |
+# | Package Name: Tmpest Sidecar Plugin                 |
+# |                                                     |
+# | Version: 1                                          |
+# |                                                     |
+# | Sofatware: Openstack                                |
+# |_____________________________________________________|
+# | Copyright: 2016@nephoscale.com                      |
+# |                                                     |
+# | Author:  info@nephoscale.com                        |
+# |_____________________________________________________|
+
+#importing required packages
 from tempest_sidecar_plugin.tests.api import base
 from tempest import test
-#importing required packages
 import json
 import subprocess
 from sidecarclient import client
@@ -8,6 +23,7 @@ import unittest
 import ConfigParser
 import os
 
+#Defining the global connection string
 _sidecar_ = None
 
 class TestTempestSidecar(base.BaseTempestSidecarTest):
@@ -15,10 +31,17 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
     @classmethod
     def resource_setup(cls):
         """
-        Initialization part
-        We pass the required details for connecting to sidecar client
+        # | Constructor function. Initialization part. We pass the required details for connecting to sidecar client
+        # | 
+        # | Arguments: class method
+        # |
+        # | Return Ttype: NA
         """
+        
+        #Defining the global connection string
         global _sidecar_
+        
+        #Creating connection if not avaialble
         if not _sidecar_:
             _sidecar_ = client.Client(
                             username='admin',
@@ -31,19 +54,25 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
                     )
         super(TestTempestSidecar, cls).resource_setup()
 
-    @test.attr(type="smoke")
-    def test_hello_world(self):
-        self.assertEqual('Hello world!', 'Hello world!')
-
-
-    @test.attr(type="smoke")
-    def test_hello_world23(self):
-        self.assertEqual('Hello world!', 'Hello world!')
+    @classmethod
+    def resource_cleanup(cls):
+        """
+        # | Cleanup function. 
+        # | 
+        # | Arguments: class method
+        # |
+        # | Return Ttype: NA
+        """
+        super(TestTempestSidecar, cls).resource_cleanup()
 
     @test.attr(type="smoke")
     def test_pecan_is_running(self):
         """
         #Function to check if the pecan service is running or not by checking the running process list
+        Args:
+            self
+        Returns:
+            NA
         """
         process = subprocess.Popen('lsof -i :9090', shell=True, stdout=subprocess.PIPE)
 
@@ -75,12 +104,15 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Returns:
             True, if the details of newly created event are present
         """
+        
+        #Creating the events
         event = _sidecar_.events.create(
                                            name="eventName1",
                                            node_uuid="897897879jhkjk",
                                            vm_uuid_list=["gvjhsdgvjs7678", "bcjhdhgbskjch786768"]
                                            )
-    
+        
+        #Getting the details of the events
         event_details = _sidecar_.events.detail(id=event.id)
 
         #Details should be available if an event is created
@@ -99,6 +131,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Returns:
             True, if the event has been deleted
         """
+        
+        #Creating the events
         event = _sidecar_.events.create(
                                            name="eventToBeDeleted",
                                            node_uuid="45assd4555f5d5d5",
@@ -113,7 +147,6 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         for events in event_list:
             self.assertNotEqual(events.id, event.id)
 
-
     @test.attr(type="smoke")
     def test_event_edit(self):
         """
@@ -124,6 +157,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the event details have been updated successfully
         """
+        
+        #Creating the events
         event = _sidecar_.events.create(
                                            name="eventBeforeUpdationn",
                                            node_uuid="45sassd4555f5d5d5",
@@ -152,6 +187,7 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
             True, if the event details are displayed correctly
         """
         
+        #Creating the events
         event = _sidecar_.events.create(
                                            name="eventDetailDisplayTesting",
                                            node_uuid="45sassd4555f5685d5d5",
@@ -165,7 +201,6 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         #Deleting the newly created event after testing
         event_deletion = _sidecar_.events.delete(id=event.id)
 
-
     @test.attr(type="smoke")
     def test_healthcheck_status(self):
         """
@@ -175,9 +210,10 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if any logs exist
         """
+        
+        #Getting the status of the healthcheck events
         event_logs = _sidecar_.events.evacuate_healthcheck_status()
         self.assertGreaterEqual(len(event_logs), 0)
-
 
     @test.attr(type="smoke")
     def test_sidecar_version_listing(self):
@@ -188,6 +224,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if versions are present in the output
         """
+        
+        #Getting the version 
         version_details = _sidecar_.versions.list()
         self.assertEqual(version_details[0].version, 'v2')
         self.assertEqual(version_details[0].status, 'current')
@@ -203,6 +241,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the dead time is greater than or equal to 180s
         """
+        
+        #Getting the details from the conf file
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/sidecar/sidecar.conf")
         
@@ -219,6 +259,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the minimum limit for the failure threshold value is 5mins
         """
+        
+        #Getting the details from the conf file
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/sidecar/sidecar.conf")
         
@@ -235,6 +277,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the username is correct
         """
+        
+        #Getting the details from the conf file
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/sidecar/sidecar.conf")
         keystone_username_conf_val = Config.get('keystone_authtoken', 'username')
@@ -250,6 +294,8 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the password is correct
         """
+        
+        #Getting the details from the conf file
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/sidecar/sidecar.conf")
         keystone_password_conf_val = Config.get('keystone_authtoken', 'password')
@@ -265,12 +311,10 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         Return:
             True, if the project is correct
         """
+
+        #Getting the details from the conf file
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/sidecar/sidecar.conf")
         keystone_project_conf_val = Config.get('keystone_authtoken', 'tenant_name')
         keystone_project_env_val  = os.environ.get('OS_TENANT_NAME')
         self.assertEqual(keystone_project_conf_val, keystone_project_env_val)
-
-    @classmethod
-    def resource_cleanup(cls):
-        super(TestTempestSidecar, cls).resource_cleanup()
