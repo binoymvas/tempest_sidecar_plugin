@@ -21,7 +21,7 @@ How to run the tests
 
    .. code-block:: bash 
 
-    $ tempest run --workspace cloud-01 --list-tests
+    $ tempest run --workspace tempestworkspace --list-tests
     
 
    This command will show your complete list of test cases inside the plugin.
@@ -31,4 +31,4 @@ How to run the tests
 
    .. code-block:: bash  
     
-    $  tempest run --workspace cloud-01  --regex tempest_sidecar_plugin.tests.api.test_sidecar.TestTempestSidecar
+    $  tempest run --workspace tempestworkspace  --regex tempest_sidecar_plugin.tests.api.test_sidecar.TestTempestSidecar
