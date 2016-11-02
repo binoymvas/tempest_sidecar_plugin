@@ -42,7 +42,7 @@ class TestTempestSidecar(base.BaseTempestSidecarTest):
         
         #Defining the global connection string
         global _sidecar_
-        
+ 
         #Creating connection if not avaialble
         if not _sidecar_:
             _sidecar_ = client.Client(
